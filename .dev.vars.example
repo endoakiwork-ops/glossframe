@@ -1,0 +1,3 @@
+# Initial application password (8–200 characters). No shared default.
+# Enter it in the official Cloudflare deployment form; never commit its value.
+INITIAL_OWNER_PASSWORD=

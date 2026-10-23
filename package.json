@@ -1,0 +1,78 @@
+{
+  "name": "glossframe",
+  "version": "0.1.0",
+  "description": "Image translation, grammar notes, vocabulary and spaced review on Cloudflare Workers.",
+  "private": true,
+  "type": "module",
+  "license": "MIT",
+  "scripts": {
+    "dev": "vite",
+    "dev:worker": "wrangler dev",
+    "build": "npm run typecheck && vite build",
+    "preview": "vite preview",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.worker.json",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "db:create": "wrangler d1 create glossframe",
+    "kv:create": "wrangler kv namespace create IMAGES",
+    "db:migrate": "CI=true wrangler d1 migrations apply DB --remote",
+    "db:migrate:local": "wrangler d1 migrations apply DB --local --config wrangler.local.jsonc --persist-to .wrangler/local-app",
+    "deploy": "npm run db:migrate && wrangler deploy",
+    "dev:local": "node scripts/local-dev.mjs",
+    "dev:local:offline": "node scripts/local-dev.mjs --offline",
+    "ocr:lexicon": "node scripts/build-ocr-lexicon.mjs",
+    "ocr:prepare": "node scripts/prepare-paddle-models.mjs",
+    "predev": "npm run ocr:prepare",
+    "prebuild": "npm run ocr:prepare",
+    "predev:local": "npm run ocr:prepare",
+    "predev:local:offline": "npm run ocr:prepare",
+    "password:reset": "node scripts/reset-password.mjs --remote",
+    "check:public": "node scripts/check-public.mjs",
+    "test:smoke": "node scripts/smoke-app.mjs",
+    "deploy:full": "npm run build && npm run deploy"
+  },
+  "dependencies": {
+    "hono": "^4.13.13",
+    "lucide-react": "^1.61.0",
+    "onnxruntime-web": "^1.23.2",
+    "ppu-paddle-ocr": "^6.6.1",
+    "react": "^19.3.1",
+    "react-dom": "^19.3.1",
+    "react-router-dom": "^7.18.4",
+    "tesseract.js": "^7.0.0",
+    "zod": "^4.6.7"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^5.20261021.1",
+    "@types/node": "^24.0.0",
+    "@types/react": "^19.3.0",
+    "@types/react-dom": "^19.3.0",
+    "@vitejs/plugin-react": "^6.1.2",
+    "dictionary-en": "^4.0.0",
+    "playwright": "^1.64.1",
+    "typescript": "^7.0.2",
+    "vite": "^8.3.4",
+    "vite-plugin-pwa": "^2.0.0",
+    "vitest": "^5.0.5",
+    "wrangler": "^4.151.3"
+  },
+  "engines": {
+    "node": ">=22"
+  },
+  "cloudflare": {
+    "bindings": {
+      "INITIAL_OWNER_PASSWORD": {
+        "description": "このアプリ専用の初期パスワードを8〜200文字で入力してください。CloudflareやGitHubのパスワードとは別にし、保存してください。初回ログインだけに使います。"
+      },
+      "DB": {
+        "description": "あなたの単語帳・翻訳履歴・認証情報を保存します。"
+      },
+      "IMAGES": {
+        "description": "保存を有効にした画像を保存します。"
+      },
+      "AI": {
+        "description": "あなたのCloudflareアカウントのWorkers AIを利用します。無料枠には上限があります。"
+      }
+    }
+  }
+}

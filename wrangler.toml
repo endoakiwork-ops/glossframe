@@ -1,0 +1,36 @@
+# Public Deploy to Cloudflare template. Existing private wrangler.jsonc takes precedence.
+name = "glossframe"
+main = "src/worker/index.ts"
+compatibility_date = "2026-10-01"
+workers_dev = true
+preview_urls = false
+
+[observability]
+enabled = true
+
+[assets]
+directory = "./dist/client"
+binding = "ASSETS"
+run_worker_first = true
+not_found_handling = "single-page-application"
+
+[[d1_databases]]
+binding = "DB"
+database_name = "glossframe"
+database_id = "cf20008e-cdba-4735-97f2-98ce48977789"
+migrations_dir = "migrations"
+
+[[kv_namespaces]]
+binding = "IMAGES"
+id = "b2d5904f462c406bbbdd23060570d276"
+
+[ai]
+binding = "AI"
+
+[vars]
+APP_NAME = "GlossFrame"
+DEFAULT_MODEL = "@cf/qwen/qwen3-30b-a3b-fp8"
+WORD_MODEL = "@cf/zai-org/glm-4.7-flash"
+FALLBACK_MODEL = "@cf/zai-org/glm-4.7-flash"
+SESSION_DAYS = "30"
+OWNER_SETUP_DISABLED = "true"
